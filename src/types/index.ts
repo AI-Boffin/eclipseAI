@@ -49,6 +49,26 @@ export interface EmailJob {
   extractedJob?: Partial<Job>;
 }
 
+export interface WorkloadMetrics {
+  activeJobs: number;
+  candidatesManaged: number;
+  emailsProcessed: number;
+  placementsMade: number;
+  avgResponseTime: number; // hours
+  lastActivity: string;
+  weeklyHours: number;
+  monthlyTargets: {
+    placements: number;
+    interviews: number;
+    newCandidates: number;
+  };
+  performance: {
+    placementRate: number; // percentage
+    candidateResponseRate: number;
+    clientSatisfaction: number;
+  };
+}
+
 export interface RecruitmentAgent {
   id: string;
   name: string;
@@ -58,6 +78,17 @@ export interface RecruitmentAgent {
   locations: string[];
   isActive: boolean;
   workload: number; // 0-100 percentage
+  capacity: {
+    maxActiveJobs: number;
+    maxCandidates: number;
+    hoursPerWeek: number;
+  };
+  metrics: WorkloadMetrics;
+  preferences: {
+    urgencyWeighting: number; // 1-10 scale
+    locationRadius: number; // miles
+    autoAssignment: boolean;
+  };
 }
 
 export interface CandidateMatch {
@@ -96,4 +127,16 @@ export interface EmailConfig {
   tls: boolean;
   checkInterval: number; // minutes
   nhsDomains: string[];
+}
+
+export interface WorkloadCalculation {
+  totalScore: number;
+  breakdown: {
+    activeJobs: number;
+    candidatesManaged: number;
+    urgentTasks: number;
+    responseTime: number;
+  };
+  status: 'available' | 'moderate' | 'busy' | 'overloaded';
+  recommendation: string;
 }
