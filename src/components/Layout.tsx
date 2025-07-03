@@ -9,8 +9,10 @@ import {
   Settings, 
   Brain,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from './AuthProvider';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,6 +20,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const navigation = [
@@ -31,6 +34,10 @@ export default function Layout({ children }: LayoutProps) {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -97,14 +104,27 @@ export default function Layout({ children }: LayoutProps) {
             ))}
           </nav>
           <div className="p-6 border-t border-gray-200">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-white">A</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">
+                    {user?.email?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-900">
+                    {user?.email?.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
+                </div>
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">admin@eclipse-ai.com</p>
-              </div>
+              <button
+                onClick={handleSignOut}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
@@ -124,7 +144,12 @@ export default function Layout({ children }: LayoutProps) {
             <Brain className="w-6 h-6 text-blue-600" />
             <span className="ml-2 text-lg font-bold text-gray-900">Eclipse AI</span>
           </div>
-          <div className="w-10" /> {/* Spacer for centering */}
+          <button
+            onClick={handleSignOut}
+            className="p-2 text-gray-400 hover:text-gray-600"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Page content */}
