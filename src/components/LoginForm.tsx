@@ -129,12 +129,13 @@ export default function LoginForm() {
           </div>
 
           {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 text-center mb-2">Demo Credentials:</p>
-            <div className="text-xs text-gray-700 space-y-1">
-              <p><strong>Email:</strong> sarah.mitchell@eclipse-ai.com</p>
-              <p><strong>Password:</strong> demo123</p>
-            </div>
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <p className="text-xs text-blue-800 text-center">
+              {isSignUp 
+                ? 'Create your account to get started with Eclipse AI Assistant' 
+                : 'Sign in with your existing account or create a new one above'
+              }
+            </p>
           </div>
         </div>
       </div>
