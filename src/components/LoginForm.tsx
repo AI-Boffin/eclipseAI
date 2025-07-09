@@ -130,12 +130,26 @@ export default function LoginForm() {
 
           {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-800 text-center">
-              {isSignUp 
-                ? 'Create your account to get started with Eclipse AI Assistant' 
-                : 'Sign in with your existing account or create a new one above'
-              }
-            </p>
+            <div className="text-xs text-blue-800">
+              <p className="font-medium mb-2">Account Setup:</p>
+              <div className="space-y-1">
+                <p><strong>Email:</strong> josh.h.t@live.co.uk</p>
+                <p className="text-blue-600">
+                  {isSignUp 
+                    ? 'Use this email to create your password-based account'
+                    : 'If you signed up with GitHub, you need to set a password first'
+                  }
+                </p>
+              </div>
+              {!isSignUp && (
+                <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded">
+                  <p className="text-amber-800 text-xs">
+                    <strong>GitHub users:</strong> Go to Supabase Dashboard → Authentication → Users → 
+                    find your account → set a password, or create a new account above.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
