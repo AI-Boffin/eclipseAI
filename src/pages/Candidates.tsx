@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Download, Upload, Brain, Mail, Eye } from 'lucide-react';
+import { Search, Filter, Download, Upload, Brain, Mail, Eye, AlertTriangle } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { CSVService } from '../services/csv';
-import type { Candidate } from '../types';
+import { DoctorCommunicationService } from '../services/doctor-communication';
+import type { Candidate, Job } from '../types';
 
 export default function Candidates() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -13,6 +14,8 @@ export default function Candidates() {
   const [selectedSpecialization, setSelectedSpecialization] = useState('');
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [summarizing, setSummarizing] = useState<string | null>(null);
+  const [sendingCompliance, setSendingCompliance] = useState<string | null>(null);
+  const [complianceService] = useState(() => new DoctorCommunicationService('mock-sendgrid-key', 'mock-openai-key'));
 
   useEffect(() => {
     // Mock data for demonstration
@@ -125,6 +128,51 @@ export default function Candidates() {
       ));
       setSummarizing(null);
     }, 2000);
+  };
+
+  const handleSendComplianceRequest = async (candidate: Candidate) => {
+    setSendingCompliance(candidate.id);
+    try {
+      // Get missing compliance documents
+      const mockJob: Job = {
+        id: 'mock',
+        title: 'General Position',
+        client: 'NHS Trust',
+        location: 'UK',
+        type: 'contract',
+        specialization: candidate.specialization,
+        salary: 'Competitive',
+        description: 'General position',
+        requirements: ['GMC Registration', 'DBS Check', 'Right to Work'],
+        postedDate: new Date().toISOString(),
+        status: 'open',
+        urgency: 'medium',
+        source: 'manual'
+      };
+
+      const requiredDocs = complianceService.getRequiredComplianceDocuments(mockJob);
+      const missingDocs = complianceService.getMissingComplianceDocuments(candidate, requiredDocs);
+      
+      if (missingDocs.length > 0) {
+        const missingDocNames = missingDocs.map(doc => doc.name);
+        const emailContent = await complianceService.generateComplianceRequestEmail(candidate, missingDocNames);
+        
+        // In a real app, this would create an email in the approval queue
+        console.log('Compliance request email generated:', emailContent);
+        
+        // Simulate sending
+        setTimeout(() => {
+          setSendingCompliance(null);
+          alert(`Compliance request sent to ${candidate.name} for: ${missingDocNames.join(', ')}`);
+        }, 1000);
+      } else {
+        setSendingCompliance(null);
+        alert(`${candidate.name} has all required compliance documents.`);
+      }
+    } catch (error) {
+      console.error('Error sending compliance request:', error);
+      setSendingCompliance(null);
+    }
   };
 
   if (loading) {
@@ -242,9 +290,9 @@ export default function Candidates() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex space-x-1">
-                      <StatusBadge status={candidate.compliance.dbs} type="compliance" />
-                      <StatusBadge status={candidate.compliance.rightToWork} type="compliance" />
-                      <StatusBadge status={candidate.compliance.registration} type="compliance" />
+                      <StatusBadge status={candidate.compliance.dbs.toString()} type="compliance" />
+                      <StatusBadge status={candidate.compliance.rightToWork.toString()} type="compliance" />
+                      <StatusBadge status={candidate.compliance.registration.toString()} type="compliance" />
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -266,8 +314,17 @@ export default function Candidates() {
                           <Brain className="w-4 h-4" />
                         )}
                       </button>
-                      <button className="text-green-600 hover:text-green-900 transition-colors">
-                        <Mail className="w-4 h-4" />
+                      <button 
+                        onClick={() => handleSendComplianceRequest(candidate)}
+                        disabled={sendingCompliance === candidate.id}
+                        className="text-green-600 hover:text-green-900 transition-colors disabled:opacity-50"
+                        title="Send Compliance Request"
+                      >
+                        {sendingCompliance === candidate.id ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </td>
@@ -335,15 +392,15 @@ export default function Candidates() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <p className="text-sm text-gray-600">DBS Check</p>
-                    <StatusBadge status={selectedCandidate.compliance.dbs} type="compliance" />
+                    <StatusBadge status={selectedCandidate.compliance.dbs.toString()} type="compliance" />
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Right to Work</p>
-                    <StatusBadge status={selectedCandidate.compliance.rightToWork} type="compliance" />
+                    <StatusBadge status={selectedCandidate.compliance.rightToWork.toString()} type="compliance" />
                   </div>
                   <div className="text-center">
                     <p className="text-sm text-gray-600">Registration</p>
-                    <StatusBadge status={selectedCandidate.compliance.registration} type="compliance" />
+                    <StatusBadge status={selectedCandidate.compliance.registration.toString()} type="compliance" />
                   </div>
                 </div>
               </div>

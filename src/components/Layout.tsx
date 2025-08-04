@@ -10,7 +10,8 @@ import {
   Brain,
   Menu,
   X,
-  LogOut
+  LogOut,
+  CheckCircle
 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 
@@ -28,6 +29,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Candidates', href: '/candidates', icon: Users },
     { name: 'Jobs', href: '/jobs', icon: Briefcase },
     { name: 'Email Jobs', href: '/email-jobs', icon: Mail },
+    { name: 'Email Approval', href: '/email-approval', icon: CheckCircle },
     { name: 'Agents', href: '/agents', icon: UserCheck },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];

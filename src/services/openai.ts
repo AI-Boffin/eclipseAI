@@ -148,4 +148,49 @@ export class OpenAIService {
 
     return response.choices[0].message.content;
   }
+
+  async generateEmail(prompt: string): Promise<{ subject: string; body: string }> {
+    const response = await this.makeRequest('/chat/completions', {
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'You are a professional medical recruitment consultant. Always respond with valid JSON containing "subject" and "body" fields.' },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 600,
+      temperature: 0.7,
+    });
+
+    try {
+      return JSON.parse(response.choices[0].message.content);
+    } catch (error) {
+      console.error('Failed to parse email response:', error);
+      return {
+        subject: 'Professional Communication',
+        body: 'Thank you for your interest. We will be in touch soon.'
+      };
+    }
+  }
+
+  async generateResponse(prompt: string): Promise<{ subject: string; body: string; confidence: number }> {
+    const response = await this.makeRequest('/chat/completions', {
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'You are a professional medical recruitment consultant responding to candidate emails. Always respond with valid JSON containing "subject", "body", and "confidence" fields.' },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 500,
+      temperature: 0.5,
+    });
+
+    try {
+      return JSON.parse(response.choices[0].message.content);
+    } catch (error) {
+      console.error('Failed to parse response:', error);
+      return {
+        subject: 'Re: Your Response',
+        body: 'Thank you for your response. We will follow up accordingly.',
+        confidence: 60
+      };
+    }
+  }
 }

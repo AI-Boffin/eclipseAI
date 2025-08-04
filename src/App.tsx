@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Candidates from './pages/Candidates';
 import Jobs from './pages/Jobs';
 import EmailJobs from './pages/EmailJobs';
+import EmailApproval from './pages/EmailApproval';
 import Agents from './pages/Agents';
 import Settings from './pages/Settings';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -34,6 +35,7 @@ function AppContent() {
           <Route path="/candidates" element={<Candidates />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/email-jobs" element={<EmailJobs />} />
+          <Route path="/email-approval" element={<EmailApproval />} />
           <Route path="/agents" element={<Agents />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

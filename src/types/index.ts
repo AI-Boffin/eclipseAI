@@ -119,6 +119,32 @@ export interface EmailTemplate {
   type: 'outreach' | 'interview' | 'placement';
 }
 
+export interface DoctorEmail {
+  id: string;
+  candidateId: string;
+  jobId: string;
+  type: 'job_opportunity' | 'compliance_request' | 'interview_invitation';
+  subject: string;
+  body: string;
+  status: 'draft' | 'pending_approval' | 'approved' | 'sent' | 'rejected';
+  aiGenerated: boolean;
+  agentApproved?: boolean;
+  agentNotes?: string;
+  sentAt?: string;
+  responseReceived?: boolean;
+  responseContent?: string;
+  createdAt: string;
+}
+
+export interface ComplianceDocument {
+  id: string;
+  name: string;
+  description: string;
+  required: boolean;
+  category: 'identity' | 'qualifications' | 'registration' | 'background' | 'health';
+  template?: string;
+}
+
 export interface EmailConfig {
   host: string;
   port: number;
