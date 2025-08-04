@@ -23,12 +23,29 @@ if (!hasValidEnvVars) {
   console.warn('⚠️ Supabase environment variables not configured. Using mock data for development.');
   
   // Create mock client for development
+  const mockUser = {
+    id: 'mock-user-id',
+    email: 'admin@eclipse-ai.com',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    app_metadata: {},
+    user_metadata: {},
+    aud: 'authenticated',
+    role: 'authenticated'
+  };
+
   supabase = {
     auth: {
-      signUp: async () => ({ data: { user: null }, error: null }),
-      signInWithPassword: async () => ({ data: { user: null }, error: null }),
+      signUp: async () => ({ data: { user: mockUser }, error: null }),
+      signInWithPassword: async () => ({ data: { user: mockUser }, error: null }),
       signOut: async () => ({ error: null }),
-      getUser: async () => ({ data: { user: null }, error: null })
+      getUser: async () => ({ data: { user: mockUser }, error: null }),
+      getSession: async () => ({ data: { session: { user: mockUser } }, error: null }),
+      onAuthStateChange: (callback: any) => {
+        // Simulate auth state change
+        callback('SIGNED_IN', { user: mockUser });
+        return { data: { subscription: { unsubscribe: () => {} } } };
+      }
     },
     from: () => ({
       select: () => ({ order: () => ({ data: [], error: null }) }),
@@ -41,10 +58,10 @@ if (!hasValidEnvVars) {
   };
   
   supabaseHelpers = {
-    async signUp() { return { data: { user: null }, error: null }; },
-    async signIn() { return { data: { user: null }, error: null }; },
+    async signUp() { return { data: { user: mockUser }, error: null }; },
+    async signIn() { return { data: { user: mockUser }, error: null }; },
     async signOut() { return { error: null }; },
-    async getCurrentUser() { return null; },
+    async getCurrentUser() { return mockUser; },
     async getAgents() { return { data: [], error: null }; },
     async getAgent() { return { data: null, error: null }; },
     async updateAgent() { return { data: null, error: null }; },
