@@ -42,9 +42,9 @@ A comprehensive AI-powered medical recruitment platform that automates email pro
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- Supabase account
-- OpenAI API key
-- SendGrid API key (for email sending)
+- Supabase account (optional for development)
+- OpenAI API key (optional)
+- SendGrid API key (optional)
 
 ### 1. Clone and Install
 ```bash
@@ -54,27 +54,37 @@ npm install
 ```
 
 ### 2. Environment Configuration
+
+#### For Development (Optional)
 Create a `.env` file in the root directory:
 
 ```env
 # Supabase Configuration
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 
-# OpenAI Configuration
-VITE_OPENAI_API_KEY=your_openai_api_key
+# OpenAI Configuration (Optional)
+VITE_OPENAI_API_KEY=your-openai-api-key
 
-# SendGrid Configuration
-VITE_SENDGRID_API_KEY=your_sendgrid_api_key
+# SendGrid Configuration (Optional)
+VITE_SENDGRID_API_KEY=your-sendgrid-api-key
 
-# Email Configuration
+# Email Configuration (Optional)
 VITE_EMAIL_HOST=imap.gmail.com
 VITE_EMAIL_PORT=993
-VITE_EMAIL_USER=your_email@domain.com
-VITE_EMAIL_PASSWORD=your_app_password
+VITE_EMAIL_USER=your-email@domain.com
+VITE_EMAIL_PASSWORD=your-app-password
 ```
 
-### 3. Database Setup
+#### For Vercel Deployment
+1. Go to your Vercel dashboard
+2. Select your project
+3. Go to **Settings** → **Environment Variables**
+4. Add the environment variables listed above
+
+**Note**: The app will work with mock data if environment variables are not configured, making it perfect for testing the UI and workflows.
+
+### 3. Database Setup (Optional)
 ```bash
 # Install Supabase CLI
 npm install -g supabase
@@ -93,6 +103,8 @@ supabase db push
 ```bash
 npm run dev
 ```
+
+**Note**: The app will work with mock data if Supabase is not configured, allowing you to test all features immediately.
 
 ## 📋 Complete Workflow
 
